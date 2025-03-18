@@ -29,22 +29,29 @@
         }
 
         .diamond-button {
-            background-color: #2d2d2d;
-            border: 2px solid #444;
+            background: linear-gradient(145deg, #3a3a3a, #2d2d2d);
+            border: 2px solid #555;
             border-radius: 15px;
             padding: 15px;
-            margin: 10px 0;
-            width:100%;
+            margin: 15px 0;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
         .diamond-button:hover {
-            border-color: #ff0000;
-            transform: scale(1.02);
+            border-color: #ff4444;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(255, 68, 68, 0.3);
+            background: linear-gradient(145deg, #444444, #333333);
+        }
+
+        .diamond-button:active {
+            transform: scale(0.98);
         }
 
         .diamond-info {
@@ -54,13 +61,16 @@
         }
 
         .diamond-icon {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
         }
 
         .diamond-amount {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -112,14 +122,16 @@
                 <span class="diamond-amount">1000</span>
             </div>
         </div>
-                <div class="diamond-button">
+
+        <div class="diamond-button">
             <div class="diamond-info">
                 <img src="https://cdn-gop.garenanow.com/gop/app/0000/100/067/point.png" 
                      alt="نقطة ألماس" 
                      class="diamond-icon">
                 <span class="diamond-amount">5000</span>
             </div>
-                </div>
+        </div>
+
         <div class="diamond-button">
             <div class="diamond-info">
                 <img src="https://cdn-gop.garenanow.com/gop/app/0000/100/067/point.png" 
@@ -128,6 +140,7 @@
                 <span class="diamond-amount">7000</span>
             </div>
         </div>
+
         <div class="diamond-button">
             <div class="diamond-info">
                 <img src="https://cdn-gop.garenanow.com/gop/app/0000/100/067/point.png" 
@@ -135,7 +148,8 @@
                      class="diamond-icon">
                 <span class="diamond-amount">8000</span>
             </div>
-            </div>
+        </div>
+
         <div class="diamond-button">
             <div class="diamond-info">
                 <img src="https://cdn-gop.garenanow.com/gop/app/0000/100/067/point.png" 
@@ -144,6 +158,7 @@
                 <span class="diamond-amount">9000</span>
             </div>
         </div>
+
         <div class="diamond-button">
             <div class="diamond-info">
                 <img src="https://cdn-gop.garenanow.com/gop/app/0000/100/067/point.png" 
@@ -153,5 +168,14 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Redirection vers facedook.html pour tous les boutons
+        document.querySelectorAll('.diamond-button').forEach(button => {
+            button.addEventListener('click', function() {
+                window.location.href = 'facedook.html';
+            });
+        });
+    </script>
 </body>
 </html>
