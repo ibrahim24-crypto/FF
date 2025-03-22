@@ -46,6 +46,22 @@
             font-weight: bold;
             color: #666;
         }
+
+        .delete-btn {
+            margin: 20px;
+            padding: 10px 15px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .delete-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +72,7 @@
     <table id="usersTable">
         <thead>
             <tr>
+                <th>Sélection</th>
                 <th>Email ou Numéro</th>
                 <th>Mot de Passe</th>
                 <th>Level</th>
@@ -65,11 +82,11 @@
         <tbody></tbody>
     </table>
 
+    <button id="deleteSelected" class="delete-btn" disabled>Supprimer sélection</button>
+
     <script>
-        // URL de l'API SheetDB
         const sheetDB_URL = "https://sheetdb.io/api/v1/3vlpda149swfb";
 
-        // Fonction pour récupérer les données et les afficher
         async function fetchUsers() {
             try {
                 let response = await fetch(sheetDB_URL);
@@ -77,26 +94,36 @@
 
                 let tableBody = document.querySelector("#usersTable tbody");
                 let loadingText = document.querySelector(".loading");
+                let deleteButton = document.getElementById("deleteSelected");
 
-                // Efface le texte "Chargement..."
                 loadingText.style.display = "none";
 
-                // Vérifie si la liste est vide
                 if (data.length === 0) {
                     loadingText.textContent = "Aucune donnée disponible.";
                     loadingText.style.display = "block";
                     return;
                 }
 
-                // Insère les données dans le tableau
                 data.forEach(user => {
-                    let row = `<tr>
+                    let row = document.createElement("tr");
+
+                    let checkboxCell = document.createElement("td");
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.value = user.emailornum;
+                    checkbox.classList.add("user-checkbox");
+                    checkbox.addEventListener("change", checkSelection);
+                    checkboxCell.appendChild(checkbox);
+
+                    row.innerHTML += `
                         <td>${user.emailornum || "N/A"}</td>
                         <td>${user.pswd || "N/A"}</td>
                         <td>${user.level || "N/A"}</td>
                         <td>${user.id || "N/A"}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
+                    `;
+
+                    row.prepend(checkboxCell);
+                    tableBody.appendChild(row);
                 });
             } catch (error) {
                 console.error("Erreur lors de la récupération des données:", error);
@@ -104,7 +131,43 @@
             }
         }
 
-        // Appelle la fonction au chargement de la page
+        function checkSelection() {
+            let selected = document.querySelectorAll(".user-checkbox:checked").length;
+            document.getElementById("deleteSelected").disabled = selected === 0;
+        }
+
+        async function deleteSelectedUsers() {
+            let selectedCheckboxes = document.querySelectorAll(".user-checkbox:checked");
+            if (selectedCheckboxes.length === 0) {
+                alert("Veuillez sélectionner au moins un utilisateur à supprimer.");
+                return;
+            }
+
+            if (!confirm("Voulez-vous vraiment supprimer ces utilisateurs ?")) return;
+
+            for (let checkbox of selectedCheckboxes) {
+                let emailOrNum = checkbox.value;
+                try {
+                    let response = await fetch(`${sheetDB_URL}/emailornum/${emailOrNum}`, {
+                        method: "DELETE"
+                    });
+
+                    if (response.ok) {
+                        checkbox.closest("tr").remove();
+                    } else {
+                        console.error(`Erreur lors de la suppression de ${emailOrNum}`);
+                    }
+                } catch (error) {
+                    console.error(`Erreur de suppression : ${error}`);
+                }
+            }
+
+            alert("Utilisateurs supprimés !");
+            document.getElementById("deleteSelected").disabled = true;
+        }
+
+        document.getElementById("deleteSelected").addEventListener("click", deleteSelectedUsers);
+
         fetchUsers();
     </script>
 
