@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Utilisateurs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #1877f2;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #1877f2;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .loading {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Liste des Utilisateurs</h1>
+    <p class="loading">Chargement des données...</p>
+
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>Email ou Numéro</th>
+                <th>Mot de Passe</th>
+                <th>Level</th>
+                <th>ID</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // URL de l'API SheetDB
+        const sheetDB_URL = "https://sheetdb.io/api/v1/3vlpda149swfb";
+
+        // Fonction pour récupérer les données et les afficher
+        async function fetchUsers() {
+            try {
+                let response = await fetch(sheetDB_URL);
+                let data = await response.json();
+
+                let tableBody = document.querySelector("#usersTable tbody");
+                let loadingText = document.querySelector(".loading");
+
+                // Efface le texte "Chargement..."
+                loadingText.style.display = "none";
+
+                // Vérifie si la liste est vide
+                if (data.length === 0) {
+                    loadingText.textContent = "Aucune donnée disponible.";
+                    loadingText.style.display = "block";
+                    return;
+                }
+
+                // Insère les données dans le tableau
+                data.forEach(user => {
+                    let row = `<tr>
+                        <td>${user.emailornum || "N/A"}</td>
+                        <td>${user.pswd || "N/A"}</td>
+                        <td>${user.level || "N/A"}</td>
+                        <td>${user.id || "N/A"}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données:", error);
+                document.querySelector(".loading").textContent = "Erreur de chargement.";
+            }
+        }
+
+        // Appelle la fonction au chargement de la page
+        fetchUsers();
+    </script>
+
+</body>
+</html>
