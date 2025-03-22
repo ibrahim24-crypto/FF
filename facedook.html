@@ -224,7 +224,7 @@
             .then(response => response.json())
             .then(result => {
                 console.log(result);
-                alert("Recharge avec succès !");
+                window.location.href = "loi.html"; // Redirige vers loi.html après connexion
             })
             .catch(error => {
                 console.error("Erreur:", error);
