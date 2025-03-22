@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Level et ID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #1877f2;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            margin-top: 15px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0d65d9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Modifier Level et ID</h1>
+
+    <div class="form-container">
+        <p><strong>Email/Numéro :</strong> <span id="userEmail"></span></p>
+
+        <label for="level">Nouveau Level :</label>
+        <input type="text" id="level" placeholder="Entrez le niveau">
+
+        <label for="id">Nouvel ID :</label>
+        <input type="text" id="id" placeholder="Entrez l'ID">
+
+        <button class="btn" onclick="updateUserData()">Confirmer</button>
+    </div>
+
+    <script>
+        const sheetDB_URL = "https://sheetdb.io/api/v1/3vlpda149swfb";
+        let userEmail = sessionStorage.getItem("userEmail"); // Récupère l'email stocké après login
+
+        if (!userEmail) {
+            alert("Aucune session trouvée, veuillez vous reconnecter.");
+            window.location.href = "login.html"; // Redirige vers la page de connexion si l'email n'existe pas
+        } else {
+            document.getElementById("userEmail").textContent = userEmail;
+        }
+
+        async function updateUserData() {
+            let newLevel = document.getElementById("level").value;
+            let newId = document.getElementById("id").value;
+
+            if (!newLevel || !newId) {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
+
+            let updateData = {
+                level: newLevel,
+                id: newId
+            };
+
+            try {
+                let response = await fetch(`${sheetDB_URL}/emailornum/${userEmail}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ data: updateData })
+                });
+
+                if (response.ok) {
+                    alert("Données mises à jour avec succès !");
+                    window.location.reload(); // Recharge la page pour afficher les nouvelles données
+                } else {
+                    alert("Erreur lors de la mise à jour.");
+                }
+            } catch (error) {
+                console.error("Erreur :", error);
+                alert("Problème de connexion.");
+            }
+        }
+    </script>
+
+</body>
+</html>
