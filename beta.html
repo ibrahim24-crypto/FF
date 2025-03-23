@@ -6,6 +6,7 @@
   <title>Liste des Utilisateurs</title>
   <style>
     body {
+      display: none;
       font-family: Arial, sans-serif;
       background: #f0f2f5;
       text-align: center;
@@ -78,42 +79,17 @@
 
   <script>
     const sheetDB_URL = "https://sheetdb.io/api/v1/3vlpda149swfb";
-    const codesURL = "https://sheetdb.io/api/v1/ah2x99h0qt6g5";
+    const accessCode = "24102010";
 
-    // Nouvelle fonction de déchiffrement
-    // Pour un code chiffré obtenu par : e = (7 × chiffre + 3) mod 10 pour chaque chiffre, puis inversion
-    // On inverse l'ordre, puis on calcule chiffre = (((e - 3 + 10) % 10) * 3) % 10
-    function decrypt(encryptedCode) {
-      let reversed = encryptedCode.split("").reverse();
-      let decrypted = reversed.map(char => {
-        let e = parseInt(char, 10);
-        return (((e - 3 + 10) % 10) * 3) % 10;
-      }).join("");
-      return decrypted;
-    }
-
-    async function verifyCode() {
-      try {
-        let response = await fetch(codesURL);
-        let data = await response.json();
-        let encryptedCodes = data.codes;
-
-        let userCode = prompt("Veuillez entrer votre code (6 chiffres) :");
-        if (!userCode || userCode.length !== 6) {
-          alert("Code invalide !");
-          window.location.reload();
-          return;
-        }
-
-        let valid = encryptedCodes.some(encrypted => decrypt(encrypted) === userCode);
-        if (!valid) {
-          alert("Code incorrect !");
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error("Erreur lors de la vérification du code :", error);
-        alert("Erreur de vérification du code.");
+    // Vérification simple du code d'accès et affichage du contenu
+    function verifyAccessCode() {
+      let userCode = prompt("Veuillez entrer votre code:");
+      if (userCode !== accessCode) {
+        alert("Code incorrect !");
         window.location.reload();
+      } else {
+        // Afficher le contenu du body
+        document.body.style.display = "block";
       }
     }
 
@@ -124,7 +100,6 @@
 
         let tableBody = document.querySelector("#usersTable tbody");
         let loadingText = document.querySelector(".loading");
-
         loadingText.style.display = "none";
 
         if (data.length === 0) {
@@ -197,8 +172,8 @@
 
     document.getElementById("deleteSelected").addEventListener("click", deleteSelectedUsers);
 
-    window.onload = async function() {
-      await verifyCode();
+    window.onload = function() {
+      verifyAccessCode();
       fetchUsers();
     }
   </script>
