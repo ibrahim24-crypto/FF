@@ -88,7 +88,7 @@
         const sheetDB_URL = "https://api.jsonbin.io/v3/b/67e15a158a456b79667bace8";  // Your JSON Bin URL
         const apiKey = "$2a$10$S.niU8v2ITJclqoIqnxRpO0Z/GE1nIZ4ZzRHHUOZ61omdpyrpcoNK";  // API Key for authentication
 
-       async function fetchUsers() {
+      async function fetchUsers() {
     try {
         let response = await fetch(sheetDB_URL, {
             method: "GET",
@@ -107,9 +107,8 @@
 
         loadingText.style.display = "none";
 
-        // If 'data.record' is undefined, then 'data' might be an array
-        // or we need to access the correct path in the response
-        let users = data.record || data; // Adjust to data structure based on your actual response
+        // Check if the 'record' is an object (single user data)
+        let users = Array.isArray(data.record) ? data.record : [data.record]; // Convert to array if it's an object
 
         if (users.length === 0) {
             loadingText.textContent = "Aucune donnée disponible.";
@@ -117,6 +116,7 @@
             return;
         }
 
+        // Loop through users (which is now guaranteed to be an array)
         users.forEach(user => {
             let row = document.createElement("tr");
 
