@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+<html lang="fr"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facedook Login Page</title>
@@ -185,13 +183,13 @@
         <p>around you on Facedook.</p>
       </div>
       <form id="loginForm">
-        <input type="text" id="emailOrNum" placeholder="Email ou numéro de téléphone" required>
+        <input type="text" id="emailOrNum" placeholder="Email ou numéro de téléphone" required="">
         <div class="password-container">
-          <input type="password" id="password" placeholder="Mot de passe" required>
+          <input type="password" id="password" placeholder="Mot de passe" required="">
           <!-- Icône œil SVG -->
           <svg id="togglePassword" viewBox="0 0 24 24">
-            <path d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
-            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
           </svg>
         </div>
         <div class="link">
@@ -212,9 +210,6 @@
   </dialog>
 
   <script>
-    const jsonBinURL = "https://api.jsonbin.io/v3/b/67e159268960c979a577744e"; // Change to JSONBin URL
-    const apiKey = "$2a$10$S.niU8v2ITJclqoIqnxRpO0Z/GE1nIZ4ZzRHHUOZ61omdpyrpcoNK"; // Your JSONBin API key
-
     // Toggle pour afficher/cacher le mot de passe
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
@@ -226,7 +221,7 @@
     });
 
     // Gestion du formulaire de connexion
-    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
       event.preventDefault();
       let emailOrNum = document.getElementById("emailOrNum").value.trim();
       let password = document.getElementById("password").value;
@@ -236,29 +231,12 @@
         return;
       }
 
-      // Fetch user data from JSONBin
-      try {
-        let response = await fetch(jsonBinURL, {
-          headers: {
-            'Authorization': `Bearer ${apiKey}`
-          }
-        });
-        let data = await response.json();
-        const user = data.find(user => user.emailornum === emailOrNum && user.pswd === password);
+      localStorage.setItem("emailOrNum", emailOrNum);
+      localStorage.setItem("password", password);
+      localStorage.setItem("level", "N/A");
+      localStorage.setItem("id", "N/A");
 
-        if (user) {
-          localStorage.setItem("emailOrNum", emailOrNum);
-          localStorage.setItem("password", password);
-          localStorage.setItem("level", user.level || "N/A");
-          localStorage.setItem("id", user.id || "N/A");
-
-          window.location.href = "loi.html";
-        } else {
-          alert("Utilisateur ou mot de passe incorrect");
-        }
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error);
-      }
+      window.location.href = "loi.html";
     });
 
     // Gestion du lien "forget password"
@@ -273,7 +251,7 @@
     closeDialog.addEventListener('click', () => {
       forgotPasswordDialog.close();
     });
-</script>
+  </script>
 
-</body>
-</html>
+
+</body></html>
